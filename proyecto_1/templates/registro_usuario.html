@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuarios</title>
+    <script>
+        function mostrarOcultarCampos() {
+            var idciudad = document.getElementById("idciudad");
+            var tipoUsuario = document.getElementById("tipo").value;
+            var latitudLongitud = document.getElementById("latitudLongitud");
+            var cargoDiv = document.getElementById("idcargo");
+            var cargoSelect = document.getElementById("cargo");
+
+            if (tipoUsuario === "vendedor") {
+                idciudad.style.display = "none";
+                latitudLongitud.style.display = "none";
+                cargoDiv.style.display = "block";
+                cargoSelect.value = "Asesor";
+            } else if (tipoUsuario === "comprador") {
+                idciudad.style.display = "block";
+                latitudLongitud.style.display = "block";
+                cargoDiv.style.display = "none";
+                cargoSelect.value = null; // Establece el valor como null
+            } else {
+                idciudad.style.display = "none";
+                latitudLongitud.style.display = "none";
+                cargoDiv.style.display = "block";
+                // Puedes establecer el valor predeterminado si lo deseas
+                cargoSelect.value = null;
+            }
+        }
+    </script>
+    <style>
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Registro de Usuarios</h2>
+    <form action="/crear" method="post">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+        
+        <label for="apellido">Apellido:</label>
+        <input type="text" id="apellido" name="apellido" required>
+
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" name="direccion" required>
+
+        <label for="contraseña">contraseña:</label>
+        <input type="password" id="contraseña" name="contraseña" required>
+
+        <label for="tipo">Tipo:</label>
+        <select id="tipo" name="tipo" onchange="mostrarOcultarCampos()" required>
+            <option value="vendedor">Vendedor</option>
+            <option value="comprador" selected>Comprador</option>
+        </select>
+
+        <div id="idciudad" style="display: block;">
+            <label for="ciudad">Ciudad:</label>
+            <input type="text" id="ciudad" name="ciudad">
+        </div>
+        <div id="latitudLongitud" style="display: block;">
+            <label for="longitud">Longitud:</label>
+            <input type="number" id="longitud" name="longitud" step="any">
+
+            <label for="latitud">Latitud:</label>
+            <input type="number" id="latitud" name="latitud" step="any">
+        </div>
+
+        <div id="idcargo" style="display: none;">
+            <label for="cargo">Cargo:</label>
+            <select id="cargo" name="cargo">
+                <option value="asesor">Asesor</option>
+                <option value="cajero">Cajero</option>
+            </select>
+        </div>
+
+        <button type="submit">Crear Usuario</button>
+    </form>
+
+</body>
+</html>
