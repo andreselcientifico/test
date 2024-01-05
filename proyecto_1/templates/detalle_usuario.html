@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Usuario</title>
+</head>
+<body>
+    <h2>Detalles del Usuario</h2>
+
+    <p>Usuario ID: {{ user.id }}</p>
+    <p>Nombre: {{ user.nombre }}</p>
+    <p>Apellido: {{ user.apellido }}</p>
+    <p>Dirección: {{ user.direccion }}</p>
+    <p>Tipo: {{ user.tipo }}</p>
+    <p>Ciudad: {{ user.ciudad }}</p>
+    <p>Longitud: {{ user.longitud }}</p>
+    <p>Latitud: {{ user.latitud }}</p>
+    <p>Estado Geográfico: {{ user.estado_geo }}</p>
+    <p>Cargo: {{ user.cargo }}</p>
+    <td><a href="/eliminar/{{ user.id }}">Eliminar</a></td>
+
+    <p><a href="/lista">Volver a la Lista de Usuarios</a></p>
+</body>
+</html>

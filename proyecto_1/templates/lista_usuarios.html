@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Usuarios</title>
+</head>
+<body>
+    <h2>Lista de Usuarios</h2>
+
+    <p><a href="/">Registrar</a></p>
+    
+    <form action="/usuario" method="get">
+        <label for="search">Buscar Usuario por ID:</label>
+        <input type="number" id="search" name="id" required>
+        <button type="submit">Buscar</button>
+    </form>    
+    
+    <table style="border-collapse: collapse; width: 100%;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Dirección</th>
+                <th>Tipo</th>
+                <th>Ciudad</th>
+                <th>Longitud</th>
+                <th>Latitud</th>
+                <th>Estado Geográfico</th>
+                <th>Cargo</th>
+                <th>Detalles</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr style="border: 1px solid #ccc; margin-bottom: 10px; padding: 10px;">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.nombre }}</td>
+                    <td>{{ user.apellido }}</td>
+                    <td>{{ user.direccion }}</td>
+                    <td>{{ user.tipo }}</td>
+                    <td>{{ user.ciudad }}</td>
+                    <td>{{ user.longitud }}</td>
+                    <td>{{ user.latitud }}</td>
+                    <td>{{ user.estado_geo }}</td>
+                    <td>{{ user.cargo }}</td>
+                    <td><a href="/usuario?id={{ user.id }}">Ver Detalles</a></td>
+                    <td><a href="/eliminar/{{ user.id }}">Eliminar</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+
