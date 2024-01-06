@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Crear Tarea{% endblock title %}
+
+{% block content %}
+    <div class="content create-task">
+        <h2>Crear Tarea</h2>
+        <form action="{% url 'tareas:crear' %}" method="post" class="task-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-create">Crear Tarea</button>
+        </form>
+        <p><a href="{% url 'tareas:Home' %}" class="btn-back">Home</a></p>
+    </div>
+{% endblock content %}

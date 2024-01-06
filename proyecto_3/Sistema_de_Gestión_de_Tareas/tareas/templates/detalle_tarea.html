@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Detalles de tarea{% endblock title %}
+
+{% block content %}
+    <div class="content">
+        <section>
+            <h2>{{ tarea.titulo }}</h2>
+            <p>{{ tarea.descripcion }}</p>
+            <p>Estado: {{ tarea.get_estado_display }}</p>
+        </section>
+    </div>
+{% endblock content %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de tareas{% endblock title %}
+
+{% block content %}
+    <div class="content">
+        <ul class="nav-links">
+            <li><a href="{% url 'tareas:crear' %}">Crear Tareas</a></li>
+            <li><a href="{% url 'tareas:Home' %}">Home</a></li>
+        </ul>
+        {% if tareas %}
+            <table class="task-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tarea in tareas %}
+                        <tr>
+                            <td>{{ tarea.id }}</td>
+                            <td>{{ tarea.titulo }}</td>
+                            <td>{{ tarea.descripcion }}</td>
+                            <td>{{ tarea.estado }}</td>
+                            <td>
+                                <a href="{% url 'tareas:eliminar' tarea.id %}">Eliminar</a>
+                                <a href="{% url 'tareas:detalle' tarea.id %}">Detalle</a>
+                                <a href="{% url 'tareas:editar' tarea.id %}">Editar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No se encontraron tareas</p>
+        {% endif %}
+    </div>
+{% endblock content %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Editar tarea: {{ tarea.titulo }}{% endblock title %}
+
+{% block content %}
+    <div class="content edit-task">
+        <h2>Editar Tarea</h2>
+        <form method="post" action="{% url 'tareas:editar' tarea.id %}" class="task-form">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+            <button type="submit" class="btn-save">Guardar Cambios</button>
+        </form>
+        <p><a href="{% url 'tareas:lista' %}" class="btn-back">Volver a la Lista de Tareas</a></p>
+    </div>
+{% endblock content %}
