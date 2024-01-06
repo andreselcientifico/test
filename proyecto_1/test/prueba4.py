@@ -1,7 +1,7 @@
 import requests
 
 API_KEY = "AIzaSyD0txU5n7xlPZ3zkEsEjW09yVHmmEVjU4o"
-address = "1600 Amphitheatre Parkway, Mountain View, CA"
+address = "calle 23 # 22-40, agustin codazzi"
 
 base_url = "https://maps.googleapis.com/maps/api/geocode/json?"
 params = {"key": API_KEY, "address": address}

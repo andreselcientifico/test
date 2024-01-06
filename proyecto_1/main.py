@@ -18,8 +18,8 @@ from fastapi import FastAPI, Request, Form, Security, status, HTTPException, Dep
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from fastapi.responses import HTMLResponse, RedirectResponse
 from config.database import Base, engine, Session, get_db
+from models.models import Usuarios, Token, UpdateUsuario
 from fastapi.templating import Jinja2Templates
-from models.models import Usuarios, Token
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from pydantic import ValidationError
@@ -74,21 +74,20 @@ def authenticate_user(db, username: str, password: str):
         return False
     return user
 
-async def geocode_address(api_key: str, address: str) -> Tuple[float, float]:
+async def geocode_address(api_key: str, address: str):
     base_url = "https://maps.googleapis.com/maps/api/geocode/json?"
-    params = {"key": api_key, "address": quote(address)}
+    params = {"key": api_key, "address": address}
 
     response = requests.get(base_url, params=params).json()
     response.keys()
-
     if response['status'] == 'OK':
         location = response["results"][0]["geometry"]
-        return location['location']['lat'] , location['location']['lng']
+        latitud, longitud = location['location']['lat'] , location['location']['lng']
+        return latitud, longitud
     else:
-        print(response['text'])
         raise Exception("Error in geocoding request")
-
-
+    
+    
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
@@ -189,6 +188,12 @@ async def create_user(
 ):
     try:
         contraseña = get_password_hash(contraseña)
+        if longitud is not None or latitud is not None:
+            estado_geo = True
+        else:
+            estado_geo = False
+        if tipo == 'comprador':
+            cargo = None
         # Crear el usuario solo con los valores que se pasan
         new_user = Usuarios(
             nombre=nombre,
@@ -211,7 +216,7 @@ async def create_user(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @app.get("/crear_usuario", response_class=HTMLResponse)
-async def read_users(request: Request):
+async def write_users(request: Request):
     return templates.TemplateResponse("registro_usuario.html", {"request": request})
 
 @app.get("/lista", response_class=HTMLResponse)
@@ -253,7 +258,49 @@ async def delete_user(id: int, db: Session = Depends(get_db)):
     db.commit()
     return RedirectResponse(url=app.url_path_for("read_users"), status_code=status.HTTP_303_SEE_OTHER)
 
+@app.patch("/update-coordinates", response_class=HTMLResponse)
+async def update_coordinates_route(db: Session = Depends(get_db)):
+    users_without_geo = db.query(Usuarios).filter(Usuarios.latitud.is_(None) | Usuarios.longitud.is_(None)).all()
+    for user in users_without_geo:
+        if user.tipo == 'vendedor':
+            continue
+        try:
+            address = user.direccion + user.ciudad  # obtén la dirección del usuario
+            latitud, longitud = await geocode_address(API_KEY, address)
+            result = db.query(Usuarios).filter(Usuarios.id == user.id).first()
+            if not result:
+                raise Exception("No se encontró usuario para actualizar")
+            data = UpdateUsuario(longitud=longitud, latitud=latitud)
+            for key, value in data.dict().items():
+                setattr(result, key, value)
+            db.add(result)
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            print(f"Error updating coordinates for user {user.nombre}: {str(e)}")
+    return RedirectResponse(url=app.url_path_for("read_users"), status_code=status.HTTP_303_SEE_OTHER)
 
+@app.get("/update-coordinates", response_class=HTMLResponse)
+async def update_coordinates_route(db: Session = Depends(get_db)):
+    users_without_geo = db.query(Usuarios).filter(Usuarios.latitud.is_(None) | Usuarios.longitud.is_(None)).all()
+    for user in users_without_geo:
+        if user.tipo == 'vendedor':
+            continue
+        try:
+            address = user.direccion + user.ciudad # obtén la dirección del usuario
+            latitud, longitud = await geocode_address(API_KEY, address)
+            result = db.query(Usuarios).filter(Usuarios.id == user.id).first()
+            if not result:
+                raise Exception("No se encontró usuario para actualizar")
+            data = UpdateUsuario(longitud=longitud, latitud=latitud, estado_geo=True)
+            for key, value in data.dict().items():
+                setattr(result, key, value)
+            db.add(result)
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            print(f"Error updating coordinates for user {user.nombre}: {str(e)}")
+    return RedirectResponse(url=app.url_path_for("read_users"), status_code=status.HTTP_303_SEE_OTHER)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)

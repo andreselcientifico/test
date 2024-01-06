@@ -31,6 +31,10 @@ class Usuarios(Base):
         'polymorphic_on': tipo
     }
 
+class UpdateUsuario(BaseModel):
+    longitud: float
+    latitud: float
+    estado_geo: bool
 
 class Direccion(Base):
     __tablename__ = "direcciones"
