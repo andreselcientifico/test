@@ -1,0 +1,128 @@
+Total de víctimas por año:
+ano
+1,984       1
+1,990      23
+1,991      70
+1,992     153
+1,993      88
+1,994      86
+1,995     130
+1,996     120
+1,997      96
+1,998      59
+1,999      54
+2,000     141
+2,001     299
+2,002     631
+2,003     760
+2,004     900
+2,005    1176
+2,006    1224
+2,007     980
+2,008     851
+2,009     771
+2,010     679
+2,011     564
+2,012     589
+2,013     427
+2,014     293
+2,015     223
+2,016      90
+2,017      59
+2,018     179
+2,019     117
+2,020     176
+2,021     157
+2,022     139
+2,023      59
+Name: count, dtype: int64
+
+Total de víctimas por mes:
+mes
+1      911
+10    1018
+11     840
+12     693
+2     1255
+3     1318
+4     1124
+5     1120
+6     1093
+7     1008
+8     1054
+9      930
+Name: count, dtype: int64
+
+Total de víctimas por departamento:
+departamento
+ANTIOQUIA             2658
+META                  1152
+NARINO                1115
+NORTE DE SANTANDER     970
+CAQUETA                946
+CAUCA                  662
+ARAUCA                 656
+BOLIVAR                645
+TOLIMA                 539
+PUTUMAYO               459
+SANTANDER              297
+CORDOBA                283
+VALLE DEL CAUCA        271
+GUAVIARE               267
+HUILA                  239
+CHOCO                  230
+CALDAS                 170
+CESAR                  156
+CUNDINAMARCA           141
+CASANARE                90
+SUCRE                   78
+BOYACA                  78
+LA GUAJIRA              60
+MAGDALENA               46
+VAUPES                  44
+BOGOTA DC               30
+QUINDIO                 28
+RISARALDA               22
+VICHADA                 17
+ATLANTICO                8
+AMAZONAS                 4
+GUAINIA                  3
+Name: count, dtype: int64
+
+Total de víctimas por actividad:
+Actividad
+Fuerza publica                       6913
+Sin Informacion                      2108
+Pasando, estando cerca               1112
+Agricultura                           366
+Erradicador manual - PCI              360
+Actividades fuerza publica            254
+Manipulacion                          192
+Transito por via usual                187
+Recogiendo comida, agua o  madera     180
+Jugando                               136
+Erradicacion de cultivos ilicitos     118
+Cuidado de animales                   103
+Otra                                   98
+Transito por trocha atajo              59
+Trabajos de casa                       56
+Caza, pesca                            49
+Mantenimiento de infraestructura       25
+Erradicacion - PONAL                   24
+Viajando                               18
+Labores de desminado                    5
+Labores de rescate                      1
+Name: count, dtype: int64
+
+Total de víctimas por género:
+genero
+Herido    10013
+Muerto     2351
+Name: count, dtype: int64
+
+Total de víctimas por estado:
+estado
+Hombre             11651
+Mujer                673
+Sin Informacion       40
+Name: count, dtype: int64
