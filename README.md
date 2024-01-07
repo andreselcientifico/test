@@ -7,3 +7,4 @@ Test de habilidades generales Área de desarrollo Ingeniero Backend
    ```bash
    git clone https://github.com/andreselcientifico/test.git
    cd test
+   pip install -r requirement.txt
