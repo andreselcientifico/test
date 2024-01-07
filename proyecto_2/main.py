@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from unidecode import unidecode
 
+# Definir una función para limpiar y analizar el archivo CSV
 def limpiar_y_analizar_csv(input_file, output_file):
     # Leer el archivo CSV y limpiar los datos
     df = pd.read_csv(input_file, encoding='utf-8')
@@ -9,7 +10,7 @@ def limpiar_y_analizar_csv(input_file, output_file):
 
     # Organizar las columnas si es necesario
     # Puedes personalizar el orden de las columnas según tus necesidades
-    column_order = ['departamento','codigodanedepartamento','municipio','codigodanemunicipio','tipoarea','sitio','ano','mes','rangoedad','grupoetnico','condicion','estado','genero','latitudcabecera','longitudcabecera','tipoevento','Ubicación','Actividad']
+    column_order = ['departamento', 'codigodanedepartamento', 'municipio', 'codigodanemunicipio', 'tipoarea', 'sitio', 'ano', 'mes', 'rangoedad', 'grupoetnico', 'condicion', 'estado', 'genero', 'latitudcabecera', 'longitudcabecera', 'tipoevento', 'Ubicación', 'Actividad']
     df = df[column_order]
 
     # Guardar el DataFrame limpio en un nuevo archivo CSV
@@ -54,9 +55,14 @@ def limpiar_y_analizar_csv(input_file, output_file):
         file.write("Total de víctimas por estado:\n")
         file.write(str(df['estado'].value_counts()) + '\n')
 
+# Verificar si el script se ejecuta directamente
 if __name__ == "__main__":
+    # Obtener la ruta del directorio actual
     base_dir = os.path.dirname(os.path.realpath(__file__))
+    
+    # Definir las rutas de entrada y salida del archivo CSV
     input_csv = f"{base_dir}/data/Situaci_n_V_ctimas_Minas_Antipersonal_en_Colombia_20240103.csv"
     output_csv = f"{base_dir}/data/Situaci_n_V_ctimas_Minas_Antipersonal_en_Colombia_20240103_resultado.csv"
 
+    # Llamar a la función para limpiar y analizar el archivo CSV
     limpiar_y_analizar_csv(input_csv, output_csv)

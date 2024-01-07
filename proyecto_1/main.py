@@ -32,12 +32,14 @@ import configparser
 import requests
 import uvicorn
 
-
+# Configura la aplicación FastAPI
 app = FastAPI()
 
+# Lee la configuración desde un archivo INI
 config = configparser.ConfigParser()
 config.read('config.ini')
 
+# Crea las tablas en la base de datos
 Base.metadata.create_all(bind=engine)
 
 # Configuración OAuth2
@@ -48,8 +50,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 API_KEY = config['API']['API_KEY']
 
+# Contexto de criptografía para manejar contraseñas
 pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
 
+# Configuración de OAuth2 para manejar tokens de acceso
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="token",
     scopes={"me": "Read information about the current user.", "items": "Read items."},
@@ -58,22 +62,26 @@ oauth2_scheme = OAuth2PasswordBearer(
 # Configuración para usar plantillas Jinja2
 templates = Jinja2Templates(directory="templates")
 
+# Función para verificar la contraseña
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
+# Función para obtener el hash de la contraseña
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-# Función para obtener el usuario por nombre de usuario
+# Función para obtener un usuario por nombre de usuario
 def get_user( db: Session, nombre: str):
     return db.query(Usuarios).filter(Usuarios.nombre == nombre).first()
 
+# Función para autenticar a un usuario
 def authenticate_user(db, username: str, password: str):
     user = get_user(db, username)
     if not user or not verify_password(password, user.contraseña):
         return False
     return user
 
+# Función para realizar geocodificación de una dirección usando la API de Google Maps
 async def geocode_address(api_key: str, address: str):
     base_url = "https://maps.googleapis.com/maps/api/geocode/json?"
     params = {"key": api_key, "address": address}
@@ -87,7 +95,7 @@ async def geocode_address(api_key: str, address: str):
     else:
         raise Exception("Error in geocoding request")
     
-    
+# Función para crear un token de acceso    
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
@@ -98,6 +106,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+# Función para obtener el usuario actual autenticado
 async def get_current_user(
     security_scopes: SecurityScopes,
     token: Annotated[str, Depends(oauth2_scheme)],
@@ -133,6 +142,7 @@ async def get_current_user(
     return user
 
 
+# Función para obtener el usuario actual activo
 async def get_current_active_user(
     current_user: Annotated[Usuarios, Security(get_current_user, scopes=["me", "items"])]
 ):
@@ -140,7 +150,9 @@ async def get_current_active_user(
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-# Rutas CRUD
+# Definición de las rutas CRUD
+
+# Ruta para obtener un token de acceso mediante autenticación de usuario
 @app.post("/token", response_class=HTMLResponse, response_model=Token)
 async def login_for_access_token(
     nombre: str = Form(...),
@@ -171,7 +183,7 @@ async def login_for_access_token(
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-# Manejar la solicitud POST desde el formulario
+# Maneja la solicitud POST desde el formulario para crear un usuario
 @app.post("/crear", response_class=HTMLResponse)
 async def create_user(
     nombre: str = Form(None),
@@ -215,15 +227,18 @@ async def create_user(
         db.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
+# Página para crear un nuevo usuario
 @app.get("/crear_usuario", response_class=HTMLResponse)
 async def write_users(request: Request):
     return templates.TemplateResponse("registro_usuario.html", {"request": request})
 
+# Página para ver la lista de usuarios
 @app.get("/lista", response_class=HTMLResponse)
 async def read_users(request: Request, db: Session = Depends(get_db)):
     users = db.query(Usuarios).all()
     return templates.TemplateResponse("lista_usuarios.html", {"request": request, "users": users})
 
+# Página para buscar un usuario por ID
 @app.get("/usuario", response_class=HTMLResponse)
 async def search_user(request: Request, id: int, db: Session = Depends(get_db)):
     user = db.query(Usuarios).filter(Usuarios.id == id).first()
@@ -246,6 +261,7 @@ async def delete_user(id: int, db: Session = Depends(get_db)):
     db.commit()
     return RedirectResponse(url=app.url_path_for("read_users"), status_code=status.HTTP_303_SEE_OTHER)
 
+
 @app.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(id: int, db: Session = Depends(get_db)):
     user = db.query(Usuarios).filter(Usuarios.id == id).first()
@@ -258,6 +274,7 @@ async def delete_user(id: int, db: Session = Depends(get_db)):
     db.commit()
     return RedirectResponse(url=app.url_path_for("read_users"), status_code=status.HTTP_303_SEE_OTHER)
 
+# Ruta para actualizar las coordenadas de los usuarios sin datos de geolocalización
 @app.patch("/update-coordinates", response_class=HTMLResponse)
 async def update_coordinates_route(db: Session = Depends(get_db)):
     users_without_geo = db.query(Usuarios).filter(Usuarios.latitud.is_(None) | Usuarios.longitud.is_(None)).all()
@@ -280,6 +297,7 @@ async def update_coordinates_route(db: Session = Depends(get_db)):
             print(f"Error updating coordinates for user {user.nombre}: {str(e)}")
     return RedirectResponse(url=app.url_path_for("read_users"), status_code=status.HTTP_303_SEE_OTHER)
 
+# Ruta para actualizar las coordenadas de los usuarios sin datos de geolocalización
 @app.get("/update-coordinates", response_class=HTMLResponse)
 async def update_coordinates_route(db: Session = Depends(get_db)):
     users_without_geo = db.query(Usuarios).filter(Usuarios.latitud.is_(None) | Usuarios.longitud.is_(None)).all()
