@@ -10,4 +10,4 @@ Test de habilidades generales Área de desarrollo Ingeniero Backend
    pip install -r requirement.txt
 
 > [!NOTE]
-> dentro de cada carpeta de proyecto se >encuentra un requirement para cada proyecto, o >también se puede usar el requirement principal >donde están todos los repositorios usados en >los proyectos
+> dentro de cada carpeta de proyecto se encuentra un requirement para cada proyecto, o también se puede usar el requirement principal donde están todos los repositorios usados en los proyectos
