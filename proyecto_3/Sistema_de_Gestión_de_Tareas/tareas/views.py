@@ -1,8 +1,10 @@
-from django.shortcuts import render
-from rest_framework import viewsets
-from django.urls import reverse_lazy
-from .serializer import UserSerializer
 from django.views.generic import TemplateView, ListView, DetailView,UpdateView,CreateView
+from django.shortcuts import get_object_or_404, redirect, render
+from .serializer import UserSerializer
+from django.urls import reverse_lazy
+from rest_framework import viewsets
+from django.urls import reverse
+from django.views import View
 from .models import Tarea
 
 # Create your views here.
@@ -38,11 +40,11 @@ class EditarTarea(UpdateView):
     def get_success_url(self):
         return reverse_lazy('tareas:detalle', kwargs={'pk': self.object.pk})
 
-class EliminarTarea(DetailView):
-    template_name = 'eliminar_tarea.html'
-    fields = '__all__'
-    model = Tarea
-    success_url = '/'
+class EliminarTarea(View):
+    def get(self, request, pk):
+        tarea = get_object_or_404(Tarea, pk=pk)
+        tarea.delete()
+        return redirect(reverse('tareas:lista'))
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = Tarea.objects.all()
