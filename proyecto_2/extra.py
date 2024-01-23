@@ -92,6 +92,15 @@ class DataProcessing(tk.Frame):
         df = pd.read_csv(input_file, encoding='utf-8')
         df = df.applymap(lambda x: unidecode(str(x)) if pd.notnull(x) else x)
 
+         # Intercambiar la información entre las columnas 'estado' y 'genero'
+        df['temp'] = df['estado']
+        df['estado'] = df['genero']
+        df['genero'] = df['temp']
+        df = df.drop('temp', axis=1)
+
+        # Mapear las etiquetas de género y estado de manera insensible a mayúsculas y minúsculas
+        df['genero'] = df['genero'].str.lower().map({'hombre': 'Masculino', 'mujer': 'Femenino'})
+
         # Organizar las columnas si es necesario
         # Puedes personalizar el orden de las columnas según tus necesidades
         column_order = ['departamento','codigodanedepartamento','municipio','codigodanemunicipio','tipoarea','sitio','ano','mes','rangoedad','grupoetnico','condicion','estado','genero','latitudcabecera','longitudcabecera','tipoevento','Ubicación','Actividad']
