@@ -116,13 +116,12 @@ Name: count, dtype: int64
 
 Total de víctimas por género:
 genero
-Herido    10013
-Muerto     2351
+Masculino    11651
+Femenino       673
 Name: count, dtype: int64
 
 Total de víctimas por estado:
 estado
-Hombre             11651
-Mujer                673
-Sin Informacion       40
+Herido    10013
+Muerto     2351
 Name: count, dtype: int64
